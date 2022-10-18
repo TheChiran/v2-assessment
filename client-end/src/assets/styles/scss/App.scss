@@ -1,0 +1,38 @@
+// font-family initialization
+@font-face{
+    font-family: poppins;
+    src: url('./../../fonts/Poppins/Poppins-Regular.ttf');
+}
+
+@import url('./dashboard-layout.scss');
+
+body{
+    margin: 0;
+    padding: 0;
+    font-family: poppins;
+  }
+  
+  p,h1,h2,h3,h4,h5,a{
+    font-family: poppins;
+  }
+  #root{
+    width: 100%;
+    height: 100%;
+  }
+  /* Auth-wrapper */
+  .container{
+    max-width: 80%;
+    margin: 0 auto;
+  }
+  .container-fuild{
+    max-width: 90%;
+    margin: 0 auto;
+  }
+  
+  .auth-wrapper{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+  }
+  
