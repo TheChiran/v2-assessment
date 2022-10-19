@@ -1,6 +1,8 @@
 import DashboardLayout from "../layouts/dashboard";
-import Login from "../pages/authentication/Login";
 import AdmissionForm from "../pages/dashboard/AdmissionForm";
+import CourseInfos from "../pages/dashboard/CourseInfos";
+import SemesterFeePayment from "../pages/dashboard/SemesterFeePayment";
+import Transactions from "../pages/dashboard/Transactions";
 
 const DashboardRoutes = {
   path: "/dashboard",
@@ -9,6 +11,18 @@ const DashboardRoutes = {
     {
       path: "/dashboard",
       element: <AdmissionForm />,
+    },
+    {
+      path: "course-infos",
+      element: <CourseInfos />,
+    },
+    {
+      path: "transactions",
+      element: <Transactions />,
+    },
+    {
+      path: "semester-fee-payment",
+      element: <SemesterFeePayment />,
     },
   ],
 };

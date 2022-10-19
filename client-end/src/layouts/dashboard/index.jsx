@@ -7,32 +7,47 @@ import {
 } from "@ant-design/icons";
 import { Breadcrumb, Layout, Menu } from "antd";
 import React, { useState } from "react";
-import { Outlet } from "react-router-dom";
+import { Outlet, useNavigate } from "react-router-dom";
 const { Header, Content, Footer, Sider } = Layout;
-function getItem(label, key, icon, children) {
+
+function getItem(label, key, icon, children, linkurl) {
   return {
     key,
     icon,
     children,
     label,
+    linkurl,
   };
 }
+
 const items = [
-  getItem("Option 1", "1", <PieChartOutlined />),
-  getItem("Option 2", "2", <DesktopOutlined />),
-  getItem("User", "sub1", <UserOutlined />, [
-    getItem("Tom", "3"),
-    getItem("Bill", "4"),
-    getItem("Alex", "5"),
-  ]),
-  getItem("Team", "sub2", <TeamOutlined />, [
-    getItem("Team 1", "6"),
-    getItem("Team 2", "8"),
-  ]),
-  getItem("Files", "9", <FileOutlined />),
+  getItem(
+    "Course Infos",
+    "1",
+    <PieChartOutlined />,
+    null,
+    "/dashboard/course-infos"
+  ),
+  getItem(
+    "Pay semester fee",
+    "2",
+    <DesktopOutlined />,
+    null,
+    "/dashboard/semester-fee-payment"
+  ),
+  getItem(
+    "Transactions",
+    "3",
+    <UserOutlined />,
+    null,
+    "/dashboard/transactions"
+  ),
 ];
 const DashboardLayout = () => {
   const [collapsed, setCollapsed] = useState(false);
+
+  const navigate = useNavigate();
+
   return (
     <Layout
       style={{
@@ -50,6 +65,7 @@ const DashboardLayout = () => {
           defaultSelectedKeys={["1"]}
           mode="inline"
           items={items}
+          onClick={(event) => navigate(`${event.item.props.linkurl}`)}
         />
       </Sider>
       <Layout className="site-layout">

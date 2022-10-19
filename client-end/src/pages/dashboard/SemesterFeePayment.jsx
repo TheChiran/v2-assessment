@@ -28,7 +28,7 @@ const AdmissionFormSchema = Yup.object().shape({
     .max(5, "Grade point must not exceed 5"),
 });
 
-const AdmissionForm = () => {
+const SemesterFeePayment = () => {
   const appContext = useContext(AppContext);
 
   const handleSubmit = (
@@ -186,4 +186,4 @@ const StyledSection = styled.div`
   }
 `;
 
-export default AdmissionForm;
+export default SemesterFeePayment;
