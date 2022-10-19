@@ -1,0 +1,12 @@
+{
+  "data": {
+    "transactions": [
+      {
+        "semester": 1,
+        "payable": 0,
+        "paid": 0,
+        "due": 0
+      }
+    ]
+  }
+}

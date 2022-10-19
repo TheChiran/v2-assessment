@@ -3,10 +3,15 @@ import AdmissionForm from "../pages/dashboard/AdmissionForm";
 import CourseInfos from "../pages/dashboard/CourseInfos";
 import SemesterFeePayment from "../pages/dashboard/SemesterFeePayment";
 import Transactions from "../pages/dashboard/Transactions";
+import PrivateRoute from "./PrivateRoutes";
 
 const DashboardRoutes = {
   path: "/dashboard",
-  element: <DashboardLayout />,
+  element: (
+    <PrivateRoute>
+      <DashboardLayout />
+    </PrivateRoute>
+  ),
   children: [
     {
       path: "/dashboard",

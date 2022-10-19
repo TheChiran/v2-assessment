@@ -1,13 +1,15 @@
 import {
   DesktopOutlined,
-  FileOutlined,
   PieChartOutlined,
-  TeamOutlined,
   UserOutlined,
+  MenuUnfoldOutlined,
+  MenuFoldOutlined,
+  CloseOutlined,
 } from "@ant-design/icons";
-import { Breadcrumb, Layout, Menu } from "antd";
+import styled from "@emotion/styled";
+import { Breadcrumb, Layout, Menu, Avatar, Dropdown, Drawer } from "antd";
 import React, { useState } from "react";
-import { Outlet, useNavigate } from "react-router-dom";
+import { Outlet, useLocation, useNavigate } from "react-router-dom";
 const { Header, Content, Footer, Sider } = Layout;
 
 function getItem(label, key, icon, children, linkurl) {
@@ -43,13 +45,51 @@ const items = [
     "/dashboard/transactions"
   ),
 ];
+
 const DashboardLayout = () => {
   const [collapsed, setCollapsed] = useState(false);
 
   const navigate = useNavigate();
+  const location = useLocation();
+  const [open, setOpen] = useState(false);
+
+  const showDrawer = () => {
+    setOpen(true);
+  };
+
+  const hideDrawer = () => {
+    setOpen(false);
+  };
+
+  const dropdownMenu = (
+    <Menu
+      items={[
+        {
+          key: "1",
+          label: (
+            <a
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={() => navigate("/auth/login")}
+            >
+              Logout
+            </a>
+          ),
+        },
+      ]}
+    />
+  );
+
+  const getCurrentActiveLink = () => {
+    const current = items.filter((item) => {
+      return item.linkurl === location.pathname;
+    });
+
+    return current[0].key;
+  };
 
   return (
-    <Layout
+    <StyledLayout
       style={{
         minHeight: "100vh",
       }}
@@ -62,7 +102,7 @@ const DashboardLayout = () => {
         <div className="logo" />
         <Menu
           theme="dark"
-          defaultSelectedKeys={["1"]}
+          defaultSelectedKeys={[`${getCurrentActiveLink()}`]}
           mode="inline"
           items={items}
           onClick={(event) => navigate(`${event.item.props.linkurl}`)}
@@ -72,9 +112,45 @@ const DashboardLayout = () => {
         <Header
           className="site-layout-background"
           style={{
-            padding: 0,
+            padding: "0 16px",
           }}
-        />
+        >
+          <StyledHeaderContent>
+            <div className="left-section">
+              <MenuUnfoldOutlined className="ham-menu" onClick={showDrawer} />
+              <StyledDrawer
+                title={
+                  <div className="title-section">
+                    <CloseOutlined
+                      style={{ color: "#FFFFFFA6" }}
+                      onClick={hideDrawer}
+                    />
+                  </div>
+                }
+                placement={"left"}
+                closable={false}
+                onClose={hideDrawer}
+                open={open}
+                key={"left"}
+              >
+                <Menu
+                  theme="dark"
+                  defaultSelectedKeys={[`${getCurrentActiveLink()}`]}
+                  mode="inline"
+                  items={items}
+                  onClick={(event) => navigate(`${event.item.props.linkurl}`)}
+                />
+              </StyledDrawer>
+            </div>
+            <div className="right-section">
+              <Dropdown overlay={dropdownMenu}>
+                <a onClick={(e) => e.preventDefault()}>
+                  <Avatar size={32} icon={<UserOutlined />} />
+                </a>
+              </Dropdown>
+            </div>
+          </StyledHeaderContent>
+        </Header>
         <Content
           style={{
             margin: "16px 16px",
@@ -84,7 +160,8 @@ const DashboardLayout = () => {
             className="site-layout-background"
             style={{
               padding: 24,
-              minHeight: 360,
+              height: "100%",
+              overflowY: "auto",
             }}
           >
             <Outlet />
@@ -98,7 +175,63 @@ const DashboardLayout = () => {
           Ant Design ©2018 Created by Ant UED
         </Footer>
       </Layout>
-    </Layout>
+    </StyledLayout>
   );
 };
+
+const StyledDrawer = styled(Drawer)`
+  @media (max-width: 426px) {
+    .ant-drawer-content-wrapper {
+      width: 100% !important;
+    }
+  }
+  .ant-drawer-wrapper-body {
+  }
+  .ant-drawer-header {
+    background: #001529;
+    border-bottom: 1px solid #f0f0f030;
+
+    .title-section {
+      display: flex;
+      justify-content: flex-end;
+    }
+  }
+  .ant-drawer-body {
+    padding: 0;
+    background: #001529;
+  }
+`;
+
+const StyledHeaderContent = styled.div`
+  display: flex;
+  justify-content: space-between;
+
+  .left-section {
+    display: flex;
+    align-items: center;
+    .ham-menu {
+      display: none;
+      cursor: pointer;
+      font-size: 24px;
+
+      @media (max-width: 768px) {
+        display: flex;
+      }
+    }
+  }
+
+  .right-section {
+    .ant-avatar {
+      cursor: pointer;
+    }
+  }
+`;
+
+const StyledLayout = styled(Layout)`
+  .ant-layout-sider {
+    @media (max-width: 768px) {
+      display: none;
+    }
+  }
+`;
 export default DashboardLayout;

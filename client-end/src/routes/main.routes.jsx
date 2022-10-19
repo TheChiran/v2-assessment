@@ -1,3 +1,4 @@
+import PageNotFound from "../pages/404";
 import Login from "../pages/authentication/Login";
 
 const MainRoutes = {
@@ -6,6 +7,10 @@ const MainRoutes = {
     {
       path: "/",
       element: <Login />,
+    },
+    {
+      path: "*",
+      element: <PageNotFound />,
     },
   ],
 };
