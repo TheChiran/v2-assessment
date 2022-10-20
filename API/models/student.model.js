@@ -6,9 +6,9 @@ const studentSchema = new mongoose.Schema({
   name: {
     type: String,
   },
-  mobile: {
+  phone: {
     type: String,
-    required: [true, "Please provide your mobile number"],
+    required: [true, "Please provide your phone number"],
   },
   password: {
     type: String,

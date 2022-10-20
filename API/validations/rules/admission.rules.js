@@ -17,13 +17,6 @@ const processAdmissionRules = () => {
       .isLength(2)
       .withMessage("Phone number must be of at least 11 characters"),
 
-    body("phone")
-      .not()
-      .isEmpty()
-      .withMessage("Please provide phone number")
-      .isLength(11)
-      .withMessage("Phone number must be of at least 11 characters"),
-
     body("department")
       .not()
       .isEmpty()
@@ -40,7 +33,7 @@ const processAdmissionRules = () => {
 
         return true;
       }),
-    body("ssc_cgpa")
+    body("ssc_grade")
       .not()
       .isEmpty()
       .withMessage("Please provide your ssc grade point")
@@ -54,7 +47,7 @@ const processAdmissionRules = () => {
 
         return true;
       }),
-    body("hsc_cgpa")
+    body("hsc_grade")
       .not()
       .isEmpty()
       .withMessage("Please provide your hsc grade point")

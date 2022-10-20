@@ -5,15 +5,16 @@ const crudFactory = require("./../controllers/handleCRUDFactory");
 const AppError = require("./../utils/appError");
 const httpStatus = require("http-status");
 
-exports.isAdmissionValid = catchAsync(async (req, res, next) => {
-  const student = await Student.findById(req.params.id);
-
-  if (student.is_first_login)
-    return new AppError(
-      "Admission form is accessible only on first login",
-      httpStatus.BAD_REQUEST
+exports.isAdmissionValid = (req, res, next) => {
+  if (!req.user.is_first_login)
+    return next(
+      new AppError(
+        "Admission form is accessible only on first login",
+        httpStatus.BAD_REQUEST
+      )
     );
+
   next();
-});
+};
 
 exports.processAdmission = crudFactory.updateOne(Student);

@@ -1,11 +1,19 @@
 const testRoute = require("./test.routes");
 const studentRoute = require("./student.routes");
+const admissionRoute = require("./admission.routes");
+const paymentRoute = require("./payment.routes");
+const semesterRoute = require("./semester.routes");
 
 const express = require("express");
 
 const router = express.Router();
 
-const defaultRoutes = [{ path: "/students", route: studentRoute }];
+const defaultRoutes = [
+  { path: "/students", route: studentRoute },
+  { path: "/admissions", route: admissionRoute },
+  { path: "/payments", route: paymentRoute },
+  { path: "/semester", route: semesterRoute },
+];
 
 const devRoutes = [...defaultRoutes, ...[{ path: "/test", route: testRoute }]];
 

@@ -1,6 +1,6 @@
 const { getPerSemesterAmount } = require("./getCourseAmounts");
 
-module.exports = async ({
+module.exports = ({
   ssc_cgpa = 0,
   hsc_cgpa = 0,
   current_cgpa,

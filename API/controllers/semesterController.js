@@ -6,7 +6,7 @@ const {
   getTotalAmount,
 } = require("./../utils/getCourseAmounts");
 
-exports.generateSemesters = catchAsync(async (req, res, next) => {
+exports.generateSemesters = (req, res, next) => {
   let [total, per_semester_total, course_semesters] = [
     getTotalAmount(req.body.department),
     getPerSemesterAmount(req.body.department),
@@ -15,13 +15,13 @@ exports.generateSemesters = catchAsync(async (req, res, next) => {
 
   const { percentage: discountPercentage, amount: discountAmount } =
     calculateWaiver({
-      ssc_cgpa: req.body.ssc_cgpa,
-      hsc_cgpa: req.body.hsc_cgpa,
+      ssc_cgpa: req.body.ssc_grade,
+      hsc_cgpa: req.body.hsc_grade,
       department: req.body.department,
       admission_form_submission: true,
     });
 
-  for (let i = 0; i < 11; i++) {
+  for (let i = 0; i < 12; i++) {
     course_semesters.push({
       payable: per_semester_total,
       level: i + 1,
@@ -38,8 +38,10 @@ exports.generateSemesters = catchAsync(async (req, res, next) => {
   req.body.course_semesters = course_semesters;
   req.body.total_amount = total;
   req.body.total_due_amount = total;
+  req.body.is_first_login = false;
+
   next();
-});
+};
 
 exports.getAll = catchAsync(async (req, res, next) => {
   const semesters = await Student.findById(req.user.id).select({

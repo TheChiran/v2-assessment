@@ -1,4 +1,4 @@
-exports.bindStudentIdToParam = async (req, res, next) => {
-  req.params.id = req.user.id;
+exports.bindStudentIdToParam = (req, res, next) => {
+  req.params.id = req.user._id;
   next();
 };
