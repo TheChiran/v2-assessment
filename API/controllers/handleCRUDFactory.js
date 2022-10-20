@@ -1,7 +1,7 @@
-const catchAsync = require('../utils/catchAsync');
-const AppError = require('../utils/appError');
-const httpStatus = require('http-status');
-const APIFeatures = require('../utils/apiFeatures');
+const catchAsync = require("../utils/catchAsync");
+const AppError = require("../utils/appError");
+const httpStatus = require("http-status");
+const APIFeatures = require("../utils/apiFeatures");
 
 exports.deleteOne = (Model) =>
   catchAsync(async (req, res, next) => {
@@ -9,12 +9,12 @@ exports.deleteOne = (Model) =>
 
     if (!doc) {
       return next(
-        new AppError('No document found with that ID', httpStatus.NOT_FOUND)
+        new AppError("No document found with that ID", httpStatus.NOT_FOUND)
       );
     }
 
     res.status(httpStatus.NO_CONTENT).json({
-      status: 'success',
+      status: "success",
       data: null,
     });
   });
@@ -27,11 +27,11 @@ exports.updateOne = (Model) =>
     });
 
     if (!doc) {
-      return next(new AppError('No document found with that ID', 404));
+      return next(new AppError("No document found with that ID", 404));
     }
 
     res.status(httpStatus.OK).json({
-      status: 'success',
+      status: "success",
       data: {
         doc,
       },
@@ -43,7 +43,7 @@ exports.createOne = (Model) =>
     const doc = await Model.create(req.body);
 
     res.status(httpStatus.CREATED).json({
-      status: 'success',
+      status: "success",
       data: {
         doc,
       },
@@ -60,12 +60,12 @@ exports.getOne = (Model, populateOptions) =>
 
     if (!doc) {
       return next(
-        new AppError('No document found with that ID', httpStatus.NOT_FOUND)
+        new AppError("No document found with that ID", httpStatus.NOT_FOUND)
       );
     }
 
     res.status(httpStatus.OK).json({
-      status: 'success',
+      status: "success",
       data: {
         data: doc,
       },
@@ -74,13 +74,7 @@ exports.getOne = (Model, populateOptions) =>
 
 exports.getAll = (Model, customFilter = {}) =>
   catchAsync(async (req, res, next) => {
-    let filter = { ...customFilter };
-
-    if (filter['uploadedBy'] === undefined && req.user) {
-      filter = {
-        uploadedBy: req.user._id,
-      };
-    }
+    let filter = {};
 
     if (req.params.id) {
       filter.id = req.params.id;
@@ -96,7 +90,7 @@ exports.getAll = (Model, customFilter = {}) =>
 
     // SEND RESPONSE
     res.status(httpStatus.OK).json({
-      status: 'success',
+      status: "success",
       results: docs.length,
       data: {
         docs,
