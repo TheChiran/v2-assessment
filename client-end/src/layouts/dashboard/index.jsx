@@ -93,6 +93,11 @@ const DashboardLayout = (props) => {
     return current[0]?.key | 1;
   };
 
+  const navigateURL = (url) => {
+    hideDrawer();
+    navigate(`${url}`);
+  };
+
   return (
     <StyledLayout
       style={{
@@ -145,7 +150,9 @@ const DashboardLayout = (props) => {
                   defaultSelectedKeys={[`${getCurrentActiveLink()}`]}
                   mode="inline"
                   items={items}
-                  onClick={(event) => navigate(`${event.item.props.linkurl}`)}
+                  onClick={(event) =>
+                    navigateURL(`${event.item.props.linkurl}`)
+                  }
                 />
               </StyledDrawer>
             </div>

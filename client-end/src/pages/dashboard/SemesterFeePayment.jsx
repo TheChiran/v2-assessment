@@ -25,7 +25,7 @@ const FormSchema = Yup.object().shape({
 const SemesterFeePayment = (props) => {
   const navigate = useNavigate();
   let student = props?.student?.student;
-  console.log("student", student);
+  // console.log("student", student);
 
   const [alertType, setAlertType] = useState(null);
   const [alertMessage, setAlertMessage] = useState(null);
@@ -145,12 +145,25 @@ const InputGroup = styled.div`
       width: 100% !important;
     }
   }
+
+  @media (max-width: 501px) {
+    flex-direction: column;
+    row-gap: 10px;
+
+    .item-wrapper {
+      width: 100% !important;
+    }
+  }
 `;
 
 const InputWrapper = styled.div`
   display: flex;
   flex-direction: column;
   row-gap: 5px;
+
+  @media (max-width: 501px) {
+    width: 100% !important;
+  }
 `;
 
 const StyledSection = styled.div`
