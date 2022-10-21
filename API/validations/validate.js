@@ -1,5 +1,5 @@
-const { validationResult } = require('express-validator');
-const httpStatus = require('http-status');
+const { validationResult } = require("express-validator");
+const httpStatus = require("http-status");
 
 const validateInputFields = (req, res, next) => {
   const errors = validationResult(req);
@@ -10,7 +10,7 @@ const validateInputFields = (req, res, next) => {
   errors.array().map((err) => extractedErrors.push({ [err.param]: err.msg }));
 
   return res.status(httpStatus.UNPROCESSABLE_ENTITY).send({
-    status: 'error',
+    status: "error",
     errors: extractedErrors,
   });
 };

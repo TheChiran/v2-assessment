@@ -13,18 +13,16 @@ const text = `
 `;
 const semesters = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
 
-const Transactions = (props) => {
-  console.log(props.student);
-  let transactionsList = props?.student?.student?.course_semesters;
+const DueList = (props) => {
+  let transactionsList = props?.student?.student?.dueSemesterList;
 
-  console.log("transactions", transactionsList);
   const onChange = (key) => {
     console.log(key);
   };
 
   return (
     <Fragment>
-      <h1>Transactions history</h1>
+      <h1>Due transactions</h1>
       <Collapse defaultActiveKey={["1"]} onChange={onChange}>
         {transactionsList.map((semester) => {
           return (
@@ -62,4 +60,4 @@ function mapStateToProps(state) {
     student: state?.student,
   };
 }
-export default connect(mapStateToProps, {})(Transactions);
+export default connect(mapStateToProps, {})(DueList);

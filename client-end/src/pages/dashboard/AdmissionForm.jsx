@@ -8,7 +8,8 @@ import * as Yup from "yup";
 import { Alert } from "antd";
 import { useContext } from "react";
 import { AppContext } from "../../App";
-
+import { connect } from "react-redux";
+import { onAdmissionCompletion } from "../../redux/actions/admissionActions";
 const { Option } = Select;
 
 const AdmissionFormSchema = Yup.object().shape({
@@ -18,36 +19,44 @@ const AdmissionFormSchema = Yup.object().shape({
     .required("Please provide phone number"),
   name: Yup.string().required("Please provide your name"),
   department: Yup.string().required("Please provided department name"),
-  ssc: Yup.number()
+  ssc_grade: Yup.number()
     .required("Please ssc grade point")
     .min(1, "Number must be above 1")
     .max(5, "Grade point must not exceed 5"),
-  hsc: Yup.number()
+  hsc_grade: Yup.number()
     .required("Please provided hsc grade point")
     .min(1, "Number must be above 1")
     .max(5, "Grade point must not exceed 5"),
 });
 
-const AdmissionForm = () => {
+const AdmissionForm = (props) => {
   const appContext = useContext(AppContext);
 
-  const handleSubmit = (
-    { phone, name, department, ssc, hsc },
+  const handleSubmit = async (
+    { phone, name, department, ssc_grade, hsc_grade },
     { setFieldError }
   ) => {
-    console.log(phone, name, department, ssc, hsc);
-    appContext.navigateURL("/dashboard/course-infos");
+    console.log("handle submit called");
+    const response = await props.onAdmissionCompletion(
+      { phone, name, department, ssc_grade, hsc_grade },
+      props.token
+    );
+
+    if (response.status === 200) {
+      alert("Admission completed");
+      appContext.navigateURL("/dashboard/course-infos");
+    }
   };
 
   return (
     <StyledSection>
       <Formik
         initialValues={{
-          phone: "",
+          phone: props?.student?.phone,
           name: "",
-          department: "swe",
-          hsc: null,
-          ssc: null,
+          department: "SWE",
+          hsc_grade: null,
+          ssc_grade: null,
         }}
         validationSchema={AdmissionFormSchema}
         onSubmit={(values, errors) => {
@@ -73,7 +82,7 @@ const AdmissionForm = () => {
                   <label>Phone</label>
                   <Input
                     placeholder="phone"
-                    value={values.phon}
+                    value={values.phone}
                     onChange={handleChange("phone")}
                   />
                   {errors.phone && touched.phone ? (
@@ -87,15 +96,15 @@ const AdmissionForm = () => {
                 <InputWrapper className="input-wrapper">
                   <label>Department</label>
                   <Select
-                    defaultValue="swe"
+                    defaultValue="SWE"
                     style={{ width: 120 }}
                     value={values.department}
                     onChange={handleChange("department")}
                     block="true"
                   >
-                    <Option value="swe">SWE</Option>
-                    <Option value="cse">CSE</Option>
-                    <Option value="eee">EEE</Option>
+                    <Option value="SWE">SWE</Option>
+                    <Option value="CSE">CSE</Option>
+                    <Option value="EEE">EEE</Option>
                   </Select>
                   {errors.department && touched.department ? (
                     <Alert
@@ -112,13 +121,13 @@ const AdmissionForm = () => {
                   <Input
                     placeholder="exm: 4.25"
                     type="number"
-                    value={values.ssc}
-                    onChange={handleChange("ssc")}
+                    value={values.ssc_grade}
+                    onChange={handleChange("ssc_grade")}
                   />
-                  {errors.ssc && touched.ssc ? (
+                  {errors.ssc_grade && touched.ssc_grade ? (
                     <Alert
                       message="Error"
-                      description={errors.ssc}
+                      description={errors.ssc_grade}
                       type="error"
                     />
                   ) : null}
@@ -127,19 +136,20 @@ const AdmissionForm = () => {
                   <label>HSC Grade point</label>
                   <Input
                     placeholder="ex: 4.80"
-                    value={values.hsc}
-                    onChange={handleChange("hsc")}
+                    value={values.hsc_grade}
+                    onChange={handleChange("hsc_grade")}
                     type="number"
                   />
-                  {errors.hsc && touched.hsc ? (
+                  {errors.hsc_grade && touched.hsc_grade ? (
                     <Alert
                       message="Error"
-                      description={errors.hsc}
+                      description={errors.hsc_grade}
                       type="error"
                     />
                   ) : null}
                 </InputWrapper>
               </InputGroup>
+
               <Button block="true" type="primary" htmlType="submit">
                 Confirm Admission
               </Button>
@@ -186,4 +196,12 @@ const StyledSection = styled.div`
   }
 `;
 
-export default AdmissionForm;
+function mapStateToProps(state) {
+  return {
+    student: state?.student?.student,
+    token: state?.auth?.token,
+  };
+}
+export default connect(mapStateToProps, { onAdmissionCompletion })(
+  AdmissionForm
+);

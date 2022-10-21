@@ -1,5 +1,5 @@
-const httpStatus = require('http-status');
-const AppError = require('../utils/appError');
+const httpStatus = require("http-status");
+const AppError = require("../utils/appError");
 
 const handleCastErrorDB = (error) => {
   const message = `Invalid ${err.path}: ${err.value}.`;
@@ -15,17 +15,17 @@ const handleDuplicateFieldsDB = (err) => {
 };
 
 const handleJWTError = () =>
-  new AppError('Invalid token. Please log in again!', httpStatus.UNAUTHORIZED);
+  new AppError("Invalid token. Please log in again!", httpStatus.UNAUTHORIZED);
 
 const handleJWTExpiredError = () =>
   new AppError(
-    'Your token has expired! Please log in again!',
+    "Your token has expired! Please log in again!",
     httpStatus.UNAUTHORIZED
   );
 
 const handleValidationErrorDB = (error) => {
   const errors = Object.values(error.errors).map((el) => el.message);
-  const message = `Invalid input data. ${errors.join('. ')}`;
+  const message = `Invalid input data. ${errors.join(". ")}`;
   return new AppError(message, httpStatus.BAD_REQUEST);
 };
 
@@ -51,34 +51,33 @@ const sendErrorProd = (err, req, res) => {
   }
   // B) Programming or other unknown error: don't leak error details
   // 1) Log error
-  console.error('ERROR 💥', err);
+  console.error("ERROR 💥", err);
 
   // 2) Send generic message
   return res.status(httpStatus.INTERNAL_SERVER_ERROR).json({
-    status: 'error',
-    message: 'Something went very wrong!',
+    status: "error",
+    message: "Something went very wrong!",
   });
 };
 
 const errorHandler = (error, req, res, next) => {
-  console.log('error caught, error: ', error);
   error.statusCode = error.statusCode || httpStatus.INTERNAL_SERVER_ERROR;
-  error.status = error.status || 'error';
+  error.status = error.status || "error";
 
-  if (process.env.NODE_ENV === 'development') {
+  if (process.env.NODE_ENV === "development") {
     sendErrorDev(error, req, res);
-  } else if (process.env.NODE_ENV === 'production') {
+  } else if (process.env.NODE_ENV === "production") {
     let errorObj = {
       ...error,
     };
     errorObj.message = error.message;
     errorObj.name = error.name;
-    if (errorObj.name === 'CastError') errorObj = handleCastErrorDB(errorObj);
+    if (errorObj.name === "CastError") errorObj = handleCastErrorDB(errorObj);
     if (errorObj.code === 11000) errorObj = handleDuplicateFieldsDB(errorObj);
-    if (errorObj.name === 'ValidationError')
+    if (errorObj.name === "ValidationError")
       errorObj = handleValidationErrorDB(errorObj);
-    if (errorObj.name === 'JsonWebTokenError') errorObj = handleJWTError();
-    if (errorObj.name === 'TokenExpiredError')
+    if (errorObj.name === "JsonWebTokenError") errorObj = handleJWTError();
+    if (errorObj.name === "TokenExpiredError")
       errorObj = handleJWTExpiredError();
 
     sendErrorProd(errorObj, req, res);

@@ -1,8 +1,11 @@
 import DashboardLayout from "../layouts/dashboard";
 import AdmissionForm from "../pages/dashboard/AdmissionForm";
+import Congratulation from "../pages/dashboard/Congratulation";
 import CourseInfos from "../pages/dashboard/CourseInfos";
+import DueList from "../pages/dashboard/DueList";
 import SemesterFeePayment from "../pages/dashboard/SemesterFeePayment";
 import Transactions from "../pages/dashboard/Transactions";
+import FirstLogin from "./FirstLogin";
 import PrivateRoute from "./PrivateRoutes";
 
 const DashboardRoutes = {
@@ -15,7 +18,11 @@ const DashboardRoutes = {
   children: [
     {
       path: "/dashboard",
-      element: <AdmissionForm />,
+      element: (
+        <FirstLogin>
+          <AdmissionForm />
+        </FirstLogin>
+      ),
     },
     {
       path: "course-infos",
@@ -26,8 +33,16 @@ const DashboardRoutes = {
       element: <Transactions />,
     },
     {
+      path: "due-list",
+      element: <DueList />,
+    },
+    {
       path: "semester-fee-payment",
       element: <SemesterFeePayment />,
+    },
+    {
+      path: "complete",
+      element: <Congratulation />,
     },
   ],
 };

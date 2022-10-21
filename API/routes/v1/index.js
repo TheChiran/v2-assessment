@@ -12,7 +12,7 @@ const defaultRoutes = [
   { path: "/students", route: studentRoute },
   { path: "/admissions", route: admissionRoute },
   { path: "/payments", route: paymentRoute },
-  { path: "/semester", route: semesterRoute },
+  { path: "/semesters", route: semesterRoute },
 ];
 
 const devRoutes = [...defaultRoutes, ...[{ path: "/test", route: testRoute }]];

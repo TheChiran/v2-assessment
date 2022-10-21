@@ -1,13 +1,16 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import { connect } from "react-redux";
+import { Navigate } from "react-router-dom";
 
-const PrivateRoute = ({ children }) => {
-  const navigate = useNavigate();
-  const authorized = false;
-  // do check authentication
-  //   if (!authorized) return navigate("/auth/login");
-
-  return children;
+const PrivateRoute = (props) => {
+  return props?.token ? props.children : <Navigate to={"/auth/login"} />;
 };
 
-export default PrivateRoute;
+function mapStateToProps(state) {
+  return {
+    token: state?.auth?.token,
+  };
+}
+
+export default connect(mapStateToProps, {})(PrivateRoute);

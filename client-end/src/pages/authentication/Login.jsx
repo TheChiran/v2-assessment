@@ -1,16 +1,10 @@
 import React from "react";
 import AuthWrapper from "./AuthWrapper";
-import {
-  CardHeader,
-  FormControl,
-  FormControlLabel,
-  FormGroup,
-  FormLabel,
-  Grid,
-  Button,
-  TextField,
-} from "@mui/material";
+import { connect } from "react-redux";
+import { Button, TextField } from "@mui/material";
 import LockOpenOutlinedIcon from "@mui/icons-material/LockOpenOutlined";
+import { LoadingOutlined } from "@ant-design/icons";
+import { Spin } from "antd";
 import Card from "@mui/material/Card";
 import CardActions from "@mui/material/CardActions";
 import CardContent from "@mui/material/CardContent";
@@ -20,6 +14,7 @@ import { Formik, Form, Field } from "formik";
 import * as Yup from "yup";
 import Alert from "@mui/material/Alert";
 import AlertTitle from "@mui/material/AlertTitle";
+import { onLogin } from "../../redux/actions/authActions";
 
 const LoginSchema = Yup.object().shape({
   phone: Yup.string()
@@ -31,11 +26,15 @@ const LoginSchema = Yup.object().shape({
     .required("Please provided password"),
 });
 
-const Login = () => {
+const Login = (props) => {
   const navigate = useNavigate();
 
-  const handleSubmit = ({ phone, password }, { setFieldError }) => {
-    console.log(phone, password);
+  const handleSubmit = async ({ phone, password }, { setFieldError }) => {
+    const response = await props.onLogin({ phone, password });
+
+    if (response.status === 200) {
+      navigate("/dashboard");
+    }
   };
 
   return (
@@ -77,6 +76,7 @@ const Login = () => {
                         label="Password"
                         variant="outlined"
                         onChange={handleChange("password")}
+                        type="password"
                         fullWidth
                       />
                       {errors.password && touched.password ? (
@@ -97,6 +97,14 @@ const Login = () => {
                       fullWidth
                     >
                       Login
+                      {props.loading === true && (
+                        <LoadingOutlined
+                          style={{
+                            fontSize: 24,
+                          }}
+                          spin
+                        />
+                      )}
                     </Button>
                   </form>
                 );
@@ -147,4 +155,11 @@ const StyledSection = styled.div`
   }
 `;
 
-export default Login;
+function mapStateToProps(state) {
+  return {
+    token: state.auth?.token,
+    loading: state.auth?.loading,
+  };
+}
+
+export default connect(mapStateToProps, { onLogin })(Login);

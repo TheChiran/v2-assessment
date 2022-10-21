@@ -5,6 +5,7 @@ const {
   getPerSemesterAmount,
   getTotalAmount,
 } = require("./../utils/getCourseAmounts");
+const httpStatus = require("http-status");
 
 exports.generateSemesters = (req, res, next) => {
   let [total, per_semester_total, course_semesters] = [
@@ -23,21 +24,23 @@ exports.generateSemesters = (req, res, next) => {
 
   for (let i = 0; i < 12; i++) {
     course_semesters.push({
-      payable: per_semester_total,
+      payable: per_semester_total.toFixed(2),
       level: i + 1,
       cgpa: 0,
       paid_amount: 0,
       due_amount:
-        i === 0 ? per_semester_total - discountAmount : per_semester_total,
+        i === 0
+          ? (per_semester_total - discountAmount).toFixed(2)
+          : per_semester_total.toFixed(2),
       discount_percentage: i === 0 ? discountPercentage : 0,
-      discount_amount: i === 0 ? discountAmount : 0,
+      discount_amount: i === 0 ? discountAmount.toFixed(2) : 0,
       is_completed: false,
     });
   }
 
   req.body.course_semesters = course_semesters;
-  req.body.total_amount = total;
-  req.body.total_due_amount = total;
+  req.body.course_total_amount = total;
+  req.body.course_total_due_amount = total;
   req.body.is_first_login = false;
 
   next();
@@ -46,13 +49,15 @@ exports.generateSemesters = (req, res, next) => {
 exports.getAll = catchAsync(async (req, res, next) => {
   const semesters = await Student.findById(req.user.id).select({
     course_semesters: 1,
+    current_semester: 1,
   });
 
   res.status(httpStatus.OK).json({
     status: "success",
-    results: semesters.length,
+    results: semesters.course_semesters.length,
     data: {
-      semesters,
+      current_semester: semesters.current_semester,
+      semesters: semesters.course_semesters,
     },
   });
 });

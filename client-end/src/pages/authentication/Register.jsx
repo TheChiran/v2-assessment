@@ -1,9 +1,8 @@
 import React from "react";
 import AuthWrapper from "./AuthWrapper";
 import { Button, TextField } from "@mui/material";
-import Card from "@mui/material/Card";
-import CardActions from "@mui/material/CardActions";
 import CardContent from "@mui/material/CardContent";
+import { LoadingOutlined } from "@ant-design/icons";
 import styled from "@emotion/styled";
 import { useNavigate } from "react-router-dom";
 import { Formik, Form, Field } from "formik";
@@ -11,6 +10,9 @@ import * as Yup from "yup";
 import Alert from "@mui/material/Alert";
 import AlertTitle from "@mui/material/AlertTitle";
 import CustomCard from "../../components/CustomCard";
+import { onSignup } from "../../redux/actions/authActions";
+import { connect } from "react-redux";
+import { Spin } from "antd";
 
 const RegisterSchema = Yup.object().shape({
   phone: Yup.string()
@@ -25,10 +27,10 @@ const RegisterSchema = Yup.object().shape({
     .required("Please provided password confirm"),
 });
 
-const Register = () => {
+const Register = (props) => {
   const navigate = useNavigate();
 
-  const handleSubmit = (
+  const handleSubmit = async (
     { phone, password, passwordConfirm },
     { setFieldError }
   ) => {
@@ -38,6 +40,16 @@ const Register = () => {
         "passwordConfirm",
         "Password confirm must match with password"
       );
+    } else {
+      const response = await props.onSignup({
+        phone,
+        password,
+        passwordConfirm,
+      });
+      console.log(response);
+      if (response.status === 201) {
+        navigate("/dashboard");
+      }
     }
   };
 
@@ -114,7 +126,15 @@ const Register = () => {
                       color="success"
                       fullWidth
                     >
-                      Sign Up
+                      Register
+                      {props.loading === true && (
+                        <LoadingOutlined
+                          style={{
+                            fontSize: 24,
+                          }}
+                          spin
+                        />
+                      )}
                     </Button>
                   </form>
                 );
@@ -170,4 +190,11 @@ const StyledSection = styled.div`
   }
 `;
 
-export default Register;
+function mapStateToProps(state) {
+  return {
+    token: state.auth?.token,
+    loading: state.auth?.loading,
+  };
+}
+
+export default connect(mapStateToProps, { onSignup })(Register);

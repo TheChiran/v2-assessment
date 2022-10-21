@@ -1,23 +1,69 @@
-import React from "react";
+import React, { useState } from "react";
 import { Input, Button } from "antd";
 import styled from "@emotion/styled";
 import { Formik } from "formik";
 import * as Yup from "yup";
 import { Alert } from "antd";
+import { connect } from "react-redux";
+import { onPayment } from "../../redux/actions/paymentActions";
+import { Navigate, useNavigate } from "react-router-dom";
 
 const FormSchema = Yup.object().shape({
   cgpa: Yup.number()
     .required("grade point is required")
     .min(1, "Grade point must be above 1")
     .max(5, "Grade point must not exceed 5"),
+  semester: Yup.number()
+    .required("semester is required")
+    .min(1, "semester must be above or equal 1")
+    .max(12, "semester must not exceed 12"),
   amount: Yup.number()
     .required("Please provide payment amount")
     .min(1, "Number must be above 1"),
 });
 
-const SemesterFeePayment = () => {
-  const handleSubmit = ({ cgpa, amount }, { setFieldError }) => {
-    console.log("handle submit called");
+const SemesterFeePayment = (props) => {
+  const navigate = useNavigate();
+  let student = props?.student?.student;
+  console.log("student", student);
+
+  const [alertType, setAlertType] = useState(null);
+  const [alertMessage, setAlertMessage] = useState(null);
+
+  const handleSubmit = async (
+    { cgpa, amount, semester },
+    { resetForm, setFieldError }
+  ) => {
+    const response = await props.onPayment(
+      {
+        cgpa: Number(cgpa),
+        amount: Number(amount),
+        semester: Number(semester),
+      },
+      props.token
+    );
+    console.log(response);
+    if (response.status === 200) {
+      resetForm();
+      setAlertType("success");
+      setAlertMessage(response.message);
+
+      // check if semester is 12 and has due semester fees
+      if (student?.current_semester === 12) {
+        console.log("student", student);
+
+        console.log("due semester", response?.data?.dueSemesterList);
+        if (response?.data?.dueSemesterList?.length > 1) {
+          navigate("/dashboard/due-list");
+        } else {
+          navigate("/dashboard/complete");
+        }
+      } else {
+        setTimeout(() => {
+          return <Navigate to="/dashboard" />;
+        }, 500);
+      }
+    }
   };
 
   return (
@@ -25,7 +71,8 @@ const SemesterFeePayment = () => {
       <Formik
         initialValues={{
           cgpa: null,
-          amount: "",
+          amount: null,
+          semester: student?.current_semester,
         }}
         validationSchema={FormSchema}
         onSubmit={(values, errors) => {
@@ -37,11 +84,23 @@ const SemesterFeePayment = () => {
             <form onSubmit={handleSubmit}>
               <InputGroup>
                 <InputWrapper className="input-wrapper">
+                  <label>Semester (1-12)</label>
+                  <Input
+                    placeholder="semester "
+                    value={values.semester}
+                    onChange={handleChange("semester")}
+                  />
+                  {errors.semester && touched.semester ? (
+                    <Alert message={errors.semester} type="error" />
+                  ) : null}
+                </InputWrapper>
+                <InputWrapper className="input-wrapper">
                   <label>Semester CGPA</label>
                   <Input
                     placeholder="CGPA"
                     value={values.cgpa}
                     onChange={handleChange("cgpa")}
+                    type="number"
                   />
                   {errors.cgpa && touched.cgpa ? (
                     <Alert message={errors.cgpa} type="error" />
@@ -53,6 +112,7 @@ const SemesterFeePayment = () => {
                     placeholder="payment amount"
                     value={values.amount}
                     onChange={handleChange("amount")}
+                    type="number"
                   />
                   {errors.amount && touched.amount ? (
                     <Alert
@@ -70,6 +130,10 @@ const SemesterFeePayment = () => {
           );
         }}
       </Formik>
+      <br />
+      {alertType !== null && (
+        <Alert message={alertMessage} type={alertType} closable />
+      )}
     </StyledSection>
   );
 };
@@ -109,4 +173,11 @@ const StyledSection = styled.div`
   }
 `;
 
-export default SemesterFeePayment;
+function mapStateToProps(state) {
+  return {
+    student: state?.student,
+    token: state?.auth?.token,
+    loading: state?.auth?.loading,
+  };
+}
+export default connect(mapStateToProps, { onPayment })(SemesterFeePayment);

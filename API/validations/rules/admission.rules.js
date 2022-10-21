@@ -22,14 +22,12 @@ const processAdmissionRules = () => {
       .isEmpty()
       .withMessage("Please provide department name")
       .custom((value) => {
-        if (!DEPARTMENTS[value]) {
-          throw new AppError(
-            httpStatus.BAD_REQUEST,
+        if (!DEPARTMENTS[value])
+          throw new Error(
             `Please provide valid department, valid departments: ${Object.keys(
               DEPARTMENTS
             )}`
           );
-        }
 
         return true;
       }),
@@ -38,12 +36,10 @@ const processAdmissionRules = () => {
       .isEmpty()
       .withMessage("Please provide your ssc grade point")
       .custom((value) => {
-        if (value < 1 && value > 5) {
-          throw new AppError(
-            httpStatus.BAD_REQUEST,
-            `Please provide valid grade point, valid grades are between 1 and 5`
+        if (value < 1 && value > 5)
+          throw new Error(
+            "Please provide valid grade point, valid grades are between 1 and 5"
           );
-        }
 
         return true;
       }),
@@ -52,12 +48,10 @@ const processAdmissionRules = () => {
       .isEmpty()
       .withMessage("Please provide your hsc grade point")
       .custom((value) => {
-        if (value < 1 && value > 5) {
-          throw new AppError(
-            httpStatus.BAD_REQUEST,
-            `Please provide valid grade point, valid grades are between 1 and 5`
+        if (value < 1 && value > 5)
+          throw new Error(
+            "Please provide valid grade point, valid grades are between 1 and 5"
           );
-        }
 
         return true;
       }),

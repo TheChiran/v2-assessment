@@ -11,6 +11,7 @@ import { Breadcrumb, Layout, Menu, Avatar, Dropdown, Drawer } from "antd";
 import React, { useState } from "react";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 const { Header, Content, Footer, Sider } = Layout;
+import { connect } from "react-redux";
 
 function getItem(label, key, icon, children, linkurl) {
   return {
@@ -22,31 +23,35 @@ function getItem(label, key, icon, children, linkurl) {
   };
 }
 
-const items = [
-  getItem(
-    "Course Infos",
-    "1",
-    <PieChartOutlined />,
-    null,
-    "/dashboard/course-infos"
-  ),
-  getItem(
-    "Pay semester fee",
-    "2",
-    <DesktopOutlined />,
-    null,
-    "/dashboard/semester-fee-payment"
-  ),
-  getItem(
-    "Transactions",
-    "3",
-    <UserOutlined />,
-    null,
-    "/dashboard/transactions"
-  ),
-];
+const DashboardLayout = (props) => {
+  const items = [
+    getItem(
+      "Course Infos",
+      "1",
+      <PieChartOutlined />,
+      null,
+      "/dashboard/course-infos"
+    ),
+    getItem(
+      "Pay semester fee",
+      "2",
+      <DesktopOutlined />,
+      null,
+      "/dashboard/semester-fee-payment"
+    ),
+    getItem(
+      "Transactions",
+      "3",
+      <UserOutlined />,
+      null,
+      "/dashboard/transactions"
+    ),
+    props?.student?.current_semester === 12 &&
+    props?.student?.dueSemesterList?.length > 1
+      ? getItem("Due List", "4", <UserOutlined />, null, "/dashboard/due-list")
+      : null,
+  ];
 
-const DashboardLayout = () => {
   const [collapsed, setCollapsed] = useState(false);
 
   const navigate = useNavigate();
@@ -82,10 +87,10 @@ const DashboardLayout = () => {
 
   const getCurrentActiveLink = () => {
     const current = items.filter((item) => {
-      return item.linkurl === location.pathname;
+      return item?.linkurl === location.pathname;
     });
 
-    return current[0].key;
+    return current[0]?.key | 1;
   };
 
   return (
@@ -94,20 +99,22 @@ const DashboardLayout = () => {
         minHeight: "100vh",
       }}
     >
-      <Sider
-        collapsible
-        collapsed={collapsed}
-        onCollapse={(value) => setCollapsed(value)}
-      >
-        <div className="logo" />
-        <Menu
-          theme="dark"
-          defaultSelectedKeys={[`${getCurrentActiveLink()}`]}
-          mode="inline"
-          items={items}
-          onClick={(event) => navigate(`${event.item.props.linkurl}`)}
-        />
-      </Sider>
+      {props?.student?.is_first_login === false && (
+        <Sider
+          collapsible
+          collapsed={collapsed}
+          onCollapse={(value) => setCollapsed(value)}
+        >
+          <div className="logo" />
+          <Menu
+            theme="dark"
+            defaultSelectedKeys={[`${getCurrentActiveLink()}`]}
+            mode="inline"
+            items={items}
+            onClick={(event) => navigate(`${event.item.props.linkurl}`)}
+          />
+        </Sider>
+      )}
       <Layout className="site-layout">
         <Header
           className="site-layout-background"
@@ -234,4 +241,11 @@ const StyledLayout = styled(Layout)`
     }
   }
 `;
-export default DashboardLayout;
+
+function mapStateToProps(state) {
+  return {
+    student: state?.student?.student,
+    token: state?.auth?.token,
+  };
+}
+export default connect(mapStateToProps, {})(DashboardLayout);
