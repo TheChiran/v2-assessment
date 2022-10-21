@@ -5,6 +5,10 @@ import {
   MenuUnfoldOutlined,
   MenuFoldOutlined,
   CloseOutlined,
+  BookOutlined,
+  MoneyCollectOutlined,
+  AuditOutlined,
+  DollarCircleOutlined,
 } from "@ant-design/icons";
 import styled from "@emotion/styled";
 import { Breadcrumb, Layout, Menu, Avatar, Dropdown, Drawer } from "antd";
@@ -28,27 +32,33 @@ const DashboardLayout = (props) => {
     getItem(
       "Course Infos",
       "1",
-      <PieChartOutlined />,
+      <BookOutlined />,
       null,
       "/dashboard/course-infos"
     ),
     getItem(
       "Pay semester fee",
       "2",
-      <DesktopOutlined />,
+      <MoneyCollectOutlined />,
       null,
       "/dashboard/semester-fee-payment"
     ),
     getItem(
       "Transactions",
       "3",
-      <UserOutlined />,
+      <AuditOutlined />,
       null,
       "/dashboard/transactions"
     ),
     props?.student?.current_semester === 12 &&
     props?.student?.dueSemesterList?.length > 1
-      ? getItem("Due List", "4", <UserOutlined />, null, "/dashboard/due-list")
+      ? getItem(
+          "Due List",
+          "4",
+          <DollarCircleOutlined />,
+          null,
+          "/dashboard/due-list"
+        )
       : null,
   ];
 
@@ -181,13 +191,6 @@ const DashboardLayout = (props) => {
             <Outlet />
           </div>
         </Content>
-        <Footer
-          style={{
-            textAlign: "center",
-          }}
-        >
-          Ant Design ©2018 Created by Ant UED
-        </Footer>
       </Layout>
     </StyledLayout>
   );
@@ -226,7 +229,7 @@ const StyledHeaderContent = styled.div`
     .ham-menu {
       display: none;
       cursor: pointer;
-      font-size: 24px;
+      font-size: 20px;
 
       @media (max-width: 768px) {
         display: flex;
