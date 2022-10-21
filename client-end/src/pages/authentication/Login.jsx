@@ -1,10 +1,10 @@
-import React from "react";
+import React, { Fragment, useState } from "react";
 import AuthWrapper from "./AuthWrapper";
 import { connect } from "react-redux";
 import { Button, TextField } from "@mui/material";
 import LockOpenOutlinedIcon from "@mui/icons-material/LockOpenOutlined";
 import { LoadingOutlined } from "@ant-design/icons";
-import { Spin } from "antd";
+import { Spin, Alert as ErrorAlert } from "antd";
 import Card from "@mui/material/Card";
 import CardActions from "@mui/material/CardActions";
 import CardContent from "@mui/material/CardContent";
@@ -29,8 +29,16 @@ const LoginSchema = Yup.object().shape({
 const Login = (props) => {
   const navigate = useNavigate();
 
+  const [alertType, setAlertType] = useState(null);
+  const [alertMessage, setAlertMessage] = useState(null);
+
   const handleSubmit = async ({ phone, password }, { setFieldError }) => {
     const response = await props.onLogin({ phone, password });
+
+    if (response?.name === "AxiosError") {
+      setAlertType("error");
+      setAlertMessage(response?.response?.data?.message);
+    }
 
     if (response.status === 200) {
       navigate("/dashboard");
@@ -90,6 +98,18 @@ const Login = (props) => {
                       <p>Don't have account?</p>
                       <a onClick={() => navigate("/auth/register")}>Register</a>
                     </div>
+                    {alertType !== null && (
+                      <Fragment>
+                        <br />
+                        <ErrorAlert
+                          message={`${alertMessage}`}
+                          type={`${alertType}`}
+                          closable
+                        />
+                        <br />
+                      </Fragment>
+                    )}
+
                     <Button
                       type="submit"
                       variant="contained"

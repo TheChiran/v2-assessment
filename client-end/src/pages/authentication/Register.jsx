@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import AuthWrapper from "./AuthWrapper";
 import { Button, TextField } from "@mui/material";
 import CardContent from "@mui/material/CardContent";
@@ -12,7 +12,7 @@ import AlertTitle from "@mui/material/AlertTitle";
 import CustomCard from "../../components/CustomCard";
 import { onSignup } from "../../redux/actions/authActions";
 import { connect } from "react-redux";
-import { Spin } from "antd";
+import { Spin, Alert as ErrorAlert } from "antd";
 
 const RegisterSchema = Yup.object().shape({
   phone: Yup.string()
@@ -30,11 +30,14 @@ const RegisterSchema = Yup.object().shape({
 const Register = (props) => {
   const navigate = useNavigate();
 
+  const [alertType, setAlertType] = useState(null);
+  const [alertMessage, setAlertMessage] = useState(null);
+
   const handleSubmit = async (
     { phone, password, passwordConfirm },
     { setFieldError }
   ) => {
-    console.log(phone, password, passwordConfirm);
+    // console.log(phone, password, passwordConfirm);
     if (password !== passwordConfirm) {
       setFieldError(
         "passwordConfirm",
@@ -46,7 +49,13 @@ const Register = (props) => {
         password,
         passwordConfirm,
       });
-      console.log(response);
+      // console.log(response);
+
+      if (response?.name === "AxiosError") {
+        setAlertType("error");
+        setAlertMessage(response?.response?.data?.message);
+      }
+
       if (response.status === 201) {
         navigate("/dashboard");
       }
@@ -120,6 +129,19 @@ const Register = (props) => {
                       <p>Already have an account?</p>
                       <a onClick={() => navigate("/auth/login")}>Login</a>
                     </div>
+
+                    {alertType !== null && (
+                      <Fragment>
+                        <br />
+                        <ErrorAlert
+                          message={`${alertMessage}`}
+                          type={`${alertType}`}
+                          closable
+                        />
+                        <br />
+                      </Fragment>
+                    )}
+
                     <Button
                       type="submit"
                       variant="contained"

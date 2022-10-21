@@ -37,6 +37,7 @@ export const onSignup = (inputData) => {
 
       return response;
     } catch (err) {
+      console.log(err);
       dispatch(setLoadingStatus(false));
 
       return;
@@ -72,8 +73,8 @@ export const onLogin = (inputData) => {
       return response;
     } catch (err) {
       dispatch(setLoadingStatus(false));
-
-      return;
+      console.log(err);
+      return err;
     }
   };
 };
