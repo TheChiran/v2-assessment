@@ -12,7 +12,7 @@ const FormSchema = Yup.object().shape({
   cgpa: Yup.number()
     .required("grade point is required")
     .min(1, "Grade point must be above 1")
-    .max(5, "Grade point must not exceed 5"),
+    .max(4, "Grade point must not exceed 4"),
   semester: Yup.number()
     .required("semester is required")
     .min(1, "semester must be above or equal 1")
