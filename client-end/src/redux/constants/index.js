@@ -12,3 +12,6 @@ export const SET_ERROR = "SET_ERROR";
 
 // SET_LOADING_STATUS
 export const SET_LOADING_STATUS = "SET_LOADING_STATUS";
+
+// LOGOUT
+export const CLEAR_DATA = "CLEAR_DATA";

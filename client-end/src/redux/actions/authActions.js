@@ -54,7 +54,7 @@ export const onLogin = (inputData) => {
     try {
       dispatch(setLoadingStatus(true));
       const loginResponse = await httpCommon.post("/students/login", inputData);
-      console.log(loginResponse);
+
       if (loginResponse.status === 200) {
         response.status = 200;
         response.message = "Login successful";

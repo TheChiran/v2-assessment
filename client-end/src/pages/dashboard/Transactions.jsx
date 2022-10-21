@@ -14,10 +14,8 @@ const text = `
 const semesters = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
 
 const Transactions = (props) => {
-  console.log(props.student);
   let transactionsList = props?.student?.student?.course_semesters;
 
-  console.log("transactions", transactionsList);
   const onChange = (key) => {
     console.log(key);
   };

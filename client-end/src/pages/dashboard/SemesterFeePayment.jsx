@@ -42,17 +42,13 @@ const SemesterFeePayment = (props) => {
       },
       props.token
     );
-    console.log(response);
+
     if (response.status === 200) {
       resetForm();
       setAlertType("success");
       setAlertMessage(response.message);
 
-      // check if semester is 12 and has due semester fees
       if (student?.current_semester === 12) {
-        console.log("student", student);
-
-        console.log("due semester", response?.data?.dueSemesterList);
         if (response?.data?.dueSemesterList?.length > 1) {
           navigate("/dashboard/due-list");
         } else {
@@ -60,7 +56,7 @@ const SemesterFeePayment = (props) => {
         }
       } else {
         setTimeout(() => {
-          return <Navigate to="/dashboard" />;
+          navigate("/dashboard");
         }, 500);
       }
     }

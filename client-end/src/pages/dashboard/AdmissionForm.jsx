@@ -36,7 +36,6 @@ const AdmissionForm = (props) => {
     { phone, name, department, ssc_grade, hsc_grade },
     { setFieldError }
   ) => {
-    console.log("handle submit called");
     const response = await props.onAdmissionCompletion(
       { phone, name, department, ssc_grade, hsc_grade },
       props.token

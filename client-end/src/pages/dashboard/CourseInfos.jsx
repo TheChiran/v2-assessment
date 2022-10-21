@@ -26,7 +26,7 @@ const CourseInfos = (props) => {
               %
             </h1>
             <h1>
-              Current semester waiver amount:BDT-
+              Current semester waiver amount: BDT-
               {
                 student?.course_semesters[student.current_semester - 1]
                   ?.discount_amount
@@ -37,7 +37,7 @@ const CourseInfos = (props) => {
         <Grid item xs={12} md={6} lg={6}>
           <Card className="gri-item">
             <h1>
-              Due amount for current Semester:BDT-
+              Due amount for current Semester: BDT-
               {
                 student?.course_semesters[student.current_semester - 1]
                   ?.due_amount
@@ -68,6 +68,11 @@ const StyledCourses = styled.div`
   .ant-card {
     background: #1890ff;
     border-radius: 8px;
+
+    h1 {
+      font-size: 16px;
+      color: #fff;
+    }
   }
 `;
 

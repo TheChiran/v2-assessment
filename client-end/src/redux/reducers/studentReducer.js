@@ -1,4 +1,4 @@
-import { SET_ACCESS_TOKEN, SET_STUDENT_DATA } from "../constants";
+import { CLEAR_DATA, SET_ACCESS_TOKEN, SET_STUDENT_DATA } from "../constants";
 
 const initialState = {};
 
@@ -8,6 +8,10 @@ const studentReducer = (state = initialState, action) => {
       return {
         ...state,
         student: action.data,
+      };
+    case CLEAR_DATA:
+      return {
+        initialState,
       };
   }
   return state;
