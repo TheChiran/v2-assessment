@@ -27,7 +27,9 @@ exports.semesterFeePayment = catchAsync(async (req, res, next) => {
   }
 
   student.course_semesters[current_semester_index].paid_amount = amount;
-  student.course_semesters[current_semester_index].due_amount -= amount;
+  student.course_semesters[current_semester_index].due_amount = (
+    student.course_semesters[current_semester_index].due_amount - amount
+  ).toFixed(2);
   student.course_semesters[current_semester_index].is_completed = true;
 
   student.course_total_due_amount -= amount;
